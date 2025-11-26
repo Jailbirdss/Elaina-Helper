@@ -1,10 +1,8 @@
-# ✨ Elaina's Video Downloader
+# ✦ Elaina's Video Downloader
 
 > Aplikasi berbasis web untuk mendownload video dari Facebook dan TikTok dengan desain terinspirasi dari _"Wandering Witch: The Journey of Elaina"_.
 
----
-
-## Fitur
+## ✦ Fitur
 
 - Download video **Facebook** (Reel, Share link, Video post, fb.watch)
 - Download video **TikTok** (HD/SD, dengan/tanpa watermark)
@@ -13,9 +11,7 @@
 - Preview thumbnail untuk TikTok
 - Responsive design untuk mobile & desktop
 
----
-
-## 📖 Cara Menggunakan
+## ✦ Cara Menggunakan
 
 ### 1. Buka Website
 
@@ -37,14 +33,12 @@ Akses website di: **https://elaina-helper.vercel.app**
 ### 3. Paste & Download
 
 1. Paste link video di kolom input
-2. Klik tombol **"Cast Download Spell"**
+2. Klik tombol **✦Cast Download Spell✦**
 3. Tunggu proses fetching (15-20 detik)
 4. Pilih kualitas yang diinginkan
 5. Video akan otomatis terdownload
 
----
-
-## ⚠️ Catatan Penting
+## ✦ Catatan Penting
 
 ### Facebook
 
@@ -66,9 +60,7 @@ Akses website di: **https://elaina-helper.vercel.app**
 - Cara manual: Klik kanan → "Save video as..."
 - Beberapa video akan redirect karena API restrictions
 
----
-
-## 🔧 Troubleshooting
+## ✦ Troubleshooting
 
 **Q: Facebook video tidak bisa didownload?**
 
@@ -87,7 +79,7 @@ Akses website di: **https://elaina-helper.vercel.app**
 - Check koneksi internet
 - API mungkin sedang rate-limited (tunggu 1-2 menit)
 
-## 💫 Credits
+## ✦ Credits
 
 Inspired by _"Wandering Witch: The Journey of Elaina"_
 
