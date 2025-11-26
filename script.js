@@ -1,6 +1,4 @@
-// ============================================
 // PLATFORM DETECTION
-// ============================================
 function detectPlatform(url) {
     const urlLower = url.toLowerCase();
     
@@ -13,9 +11,7 @@ function detectPlatform(url) {
     return null;
 }
 
-// ============================================
 // DOM ELEMENTS & EVENT LISTENERS
-// ============================================
 const videoUrlInput = document.getElementById('videoUrl');
 const downloadBtn = document.getElementById('downloadBtn');
 const btnText = document.getElementById('btnText');
@@ -35,9 +31,7 @@ videoUrlInput.addEventListener('keypress', (e) => {
     }
 });
 
-// ============================================
 // MAIN DOWNLOAD HANDLER
-// ============================================
 async function handleDownload() {
     const url = videoUrlInput.value.trim();
     
@@ -98,9 +92,7 @@ function fetchWithTimeout(url, options, timeout = 15000) {
     ]);
 }
 
-// ============================================
-// API HANDLERS - Cobalt API (Primary)
-// ============================================
+// API HANDLERS
 async function fetchVideoData(url, platform) {
     try {
         const cobaltUrl = 'https://api.cobalt.tools/api/json';
@@ -142,7 +134,6 @@ async function fetchVideoData(url, platform) {
         throw new Error('Cobalt API failed, trying platform-specific API...');
         
     } catch (error) {
-        // Fallback to platform-specific APIs
         let videoData;
         
         switch(platform) {
@@ -218,9 +209,7 @@ function formatCobaltPickerResponse(data, url, platform) {
     };
 }
 
-// ============================================
-// API HANDLERS - Facebook (Backend Serverless)
-// ============================================
+// API HANDLERS - Facebook
 async function fetchFacebookVideo(url) {
     try {
         const response = await fetchWithTimeout('/api/facebook', {
@@ -275,13 +264,7 @@ async function fetchFacebookVideo(url) {
     }
 }
 
-// ============================================
-// API HANDLERS - TikTok (TikWm API)
-// ============================================
-
-// ============================================
-// API HANDLERS - TikTok (TikWm API)
-// ============================================
+// API HANDLERS - TikTok
 async function fetchTikTokVideo(url) {
     try {
         const apiUrl = `https://tikwm.com/api/`;
@@ -356,13 +339,7 @@ async function fetchTikTokVideo(url) {
     }
 }
 
-// ============================================
 // UI DISPLAY FUNCTIONS
-// ============================================
-
-// ============================================
-// UI DISPLAY FUNCTIONS
-// ============================================
 function formatDuration(seconds) {
     if (!seconds) return 'N/A';
     const mins = Math.floor(seconds / 60);
@@ -421,9 +398,7 @@ function displayResults(data) {
     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ============================================
 // DOWNLOAD HANDLER
-// ============================================
 async function downloadVideo(linkIndex, quality) {
     try {
         const videoData = window.currentVideoData;
@@ -525,10 +500,7 @@ async function downloadVideo(linkIndex, quality) {
     }
 }
 
-// ============================================
 // UTILITY FUNCTIONS
-// ============================================
-
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
