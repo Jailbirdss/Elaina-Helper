@@ -13,7 +13,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Magical Background */
 .magic-background {
     position: fixed;
     top: 0;
@@ -85,7 +84,6 @@ header {
     }
 }
 
-/* Character Space for PNG */
 .character-space {
     position: relative;
     height: 200px;
