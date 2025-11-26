@@ -44,24 +44,29 @@
       </header>
       <main>
         <div class="download-form">
-          <div class="input-wrapper">
-            <div class="input-icon">🔗</div>
-            <input
-              type="text"
-              id="videoUrl"
-              placeholder="Enter video link from your journey..."
-              autocomplete="off"
-            />
-          </div>
-          <button id="downloadBtn" class="download-btn">
-            <span id="btnText">
-              <span class="btn-icon">✦</span>
-              Cast Download Spell
-              <span class="btn-icon">✦</span>
-            </span>
-            <span id="btnLoader" class="loader" style="display: none"></span>
-          </button>
+          <form id="download-form">
+            <div class="input-wrapper">
+              <div class="input-icon">🔗</div>
+              <input
+                type="url"
+                id="videoUrl"
+                placeholder="Enter video link from your journey..."
+                autocomplete="off"
+                required
+              />
+            </div>
+            <button type="submit" id="downloadBtn" class="download-btn">
+              <span id="btnText">
+                <span class="btn-icon">✦</span>
+                Cast Download Spell
+                <span class="btn-icon">✦</span>
+              </span>
+              <span id="btnLoader" class="loader" style="display: none"></span>
+            </button>
+          </form>
         </div>
+
+        <div id="status" class="status-message"></div>
 
         <div id="result" class="result" style="display: none">
           <div class="video-info">
@@ -69,14 +74,19 @@
               <span class="badge-icon">✨</span>
               <h3>Magic Successful!</h3>
             </div>
-            <div class="video-preview" id="videoPreview"></div>
-            <div class="download-options" id="downloadOptions"></div>
+            <div class="video-preview">
+              <video id="preview" controls></video>
+            </div>
+            <a id="download-link" href="#" download class="download-option">
+              <div class="quality-badge">HD Quality</div>
+              <div class="size-info">Best Available</div>
+              <button class="download-quality-btn">
+                <span>✦</span>
+                Download Video
+                <span>✦</span>
+              </button>
+            </a>
           </div>
-        </div>
-
-        <div id="error" class="error" style="display: none">
-          <div class="error-icon">⚠</div>
-          <p id="errorMessage"></p>
         </div>
 
         <div class="info-section">
