@@ -371,29 +371,6 @@ main {
     animation: slideIn 0.4s ease;
 }
 
-/* Status Message */
-.status-message {
-    margin: 20px 0;
-    padding: 15px 25px;
-    border-radius: 12px;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 500;
-    animation: slideIn 0.4s ease;
-}
-
-.status-message.error {
-    background: linear-gradient(135deg, #FDF6F8 0%, #F8EEF1 100%);
-    border: 2px solid #E8D4DC;
-    color: #A0616A;
-}
-
-.status-message.loading {
-    background: linear-gradient(135deg, #F8F6FD 0%, #EAE4F3 100%);
-    border: 2px solid #D3CCE3;
-    color: #8B7AB8;
-}
-
 .result, .error {
     margin: 30px 0;
     padding: 35px;
