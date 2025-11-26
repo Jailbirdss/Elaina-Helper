@@ -1,4 +1,3 @@
-// PLATFORM DETECTION
 function detectPlatform(url) {
     const urlLower = url.toLowerCase();
     
@@ -11,7 +10,6 @@ function detectPlatform(url) {
     return null;
 }
 
-// DOM ELEMENTS & EVENT LISTENERS
 const videoUrlInput = document.getElementById('videoUrl');
 const downloadBtn = document.getElementById('downloadBtn');
 const btnText = document.getElementById('btnText');
@@ -31,7 +29,6 @@ videoUrlInput.addEventListener('keypress', (e) => {
     }
 });
 
-// MAIN DOWNLOAD HANDLER
 async function handleDownload() {
     const url = videoUrlInput.value.trim();
     
@@ -92,7 +89,6 @@ function fetchWithTimeout(url, options, timeout = 15000) {
     ]);
 }
 
-// API HANDLERS
 async function fetchVideoData(url, platform) {
     try {
         const cobaltUrl = 'https://api.cobalt.tools/api/json';
@@ -209,7 +205,6 @@ function formatCobaltPickerResponse(data, url, platform) {
     };
 }
 
-// API HANDLERS - Facebook
 async function fetchFacebookVideo(url) {
     try {
         const response = await fetchWithTimeout('/api/facebook', {
@@ -230,14 +225,12 @@ async function fetchFacebookVideo(url) {
             throw new Error(data.message || 'Gagal mengambil video');
         }
         
-        // Extract username from URL
         let author = 'Facebook User';
         const authorMatch = url.match(/facebook\.com\/([^\/\?]+)/);
         if (authorMatch && authorMatch[1] && !['share', 'watch', 'reel', 'video', 'videos'].includes(authorMatch[1])) {
             author = authorMatch[1];
         }
         
-        // Detect video type
         let title = '📱 Facebook Video';
         if (url.includes('/reel/')) {
             title = '🎬 Facebook Reel';
@@ -264,7 +257,6 @@ async function fetchFacebookVideo(url) {
     }
 }
 
-// API HANDLERS - TikTok
 async function fetchTikTokVideo(url) {
     try {
         const apiUrl = `https://tikwm.com/api/`;
@@ -339,7 +331,6 @@ async function fetchTikTokVideo(url) {
     }
 }
 
-// UI DISPLAY FUNCTIONS
 function formatDuration(seconds) {
     if (!seconds) return 'N/A';
     const mins = Math.floor(seconds / 60);
@@ -355,7 +346,6 @@ function displayResults(data) {
     
     window.currentVideoData = data;
     
-    // Generate thumbnail HTML based on platform
     let thumbnailHtml;
     if (data.thumbnail) {
         thumbnailHtml = `<img src="${data.thumbnail}" alt="Video thumbnail" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">`;
@@ -398,7 +388,6 @@ function displayResults(data) {
     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// DOWNLOAD HANDLER
 async function downloadVideo(linkIndex, quality) {
     try {
         const videoData = window.currentVideoData;
@@ -410,7 +399,6 @@ async function downloadVideo(linkIndex, quality) {
         const link = videoData.downloadLinks[linkIndex];
         const url = link.url;
         
-        // Handle manual/redirect links
         if (link.manual || link.type === 'redirect') {
             window.open(url, '_blank');
             showNotification('Link dibuka di tab baru.\n\nCara download:\n1. Klik kanan pada media\n2. Pilih "Save as"', 'info');
@@ -419,7 +407,6 @@ async function downloadVideo(linkIndex, quality) {
         
         showNotification('Memulai download...', 'info');
         
-        // Generate filename
         const author = videoData.author || 'user';
         const title = videoData.title || 'video';
         const platform = videoData.platform || 'social';
@@ -436,8 +423,6 @@ async function downloadVideo(linkIndex, quality) {
         }
         
         const filename = `${platform}_${cleanAuthor}_${cleanTitle}_${timestamp}.${extension}`;
-        
-        // Try blob download (best method)
         try {
             const response = await fetch(url, {
                 mode: 'cors',
@@ -467,10 +452,8 @@ async function downloadVideo(linkIndex, quality) {
                 return;
             }
         } catch (error) {
-            // Fallback to direct download
-        }
+    }
         
-        // Try direct anchor download
         try {
             const a = document.createElement('a');
             a.href = url;
@@ -488,10 +471,8 @@ async function downloadVideo(linkIndex, quality) {
             showNotification('Download dimulai!\nCek folder Downloads Anda.', 'success');
             return;
         } catch (error) {
-            // Fallback to open in new tab
-        }
+    }
         
-        // Last resort: open in new tab
         window.open(url, '_blank');
         showNotification('Video dibuka di tab baru.\n\nKlik kanan → "Save video as" untuk download manual.', 'info');
         
@@ -500,7 +481,6 @@ async function downloadVideo(linkIndex, quality) {
     }
 }
 
-// UTILITY FUNCTIONS
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
