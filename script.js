@@ -1,3 +1,6 @@
+// ============================================
+// PLATFORM DETECTION
+// ============================================
 function detectPlatform(url) {
     const urlLower = url.toLowerCase();
     
@@ -10,6 +13,9 @@ function detectPlatform(url) {
     return null;
 }
 
+// ============================================
+// DOM ELEMENTS & EVENT LISTENERS
+// ============================================
 const videoUrlInput = document.getElementById('videoUrl');
 const downloadBtn = document.getElementById('downloadBtn');
 const btnText = document.getElementById('btnText');
@@ -29,6 +35,9 @@ videoUrlInput.addEventListener('keypress', (e) => {
     }
 });
 
+// ============================================
+// MAIN DOWNLOAD HANDLER
+// ============================================
 async function handleDownload() {
     const url = videoUrlInput.value.trim();
     
@@ -80,7 +89,6 @@ function isValidUrl(string) {
     }
 }
 
-// Timeout helper
 function fetchWithTimeout(url, options, timeout = 15000) {
     return Promise.race([
         fetch(url, options),
@@ -90,11 +98,11 @@ function fetchWithTimeout(url, options, timeout = 15000) {
     ]);
 }
 
-// Main function: Fetch video data from multiple sources
+// ============================================
+// API HANDLERS - Cobalt API (Primary)
+// ============================================
 async function fetchVideoData(url, platform) {
     try {
-        console.log('Trying Cobalt API for', platform);
-        
         const cobaltUrl = 'https://api.cobalt.tools/api/json';
         
         const response = await fetchWithTimeout(cobaltUrl, {
@@ -119,7 +127,6 @@ async function fetchVideoData(url, platform) {
         
         if (response.ok) {
             const data = await response.json();
-            console.log('Cobalt API response:', data);
             
             if (data.status === 'error' || data.status === 'rate-limit') {
                 throw new Error(data.text || 'API rate limit or error');
@@ -135,8 +142,7 @@ async function fetchVideoData(url, platform) {
         throw new Error('Cobalt API failed, trying platform-specific API...');
         
     } catch (error) {
-        console.log('Cobalt API failed:', error.message);
-        
+        // Fallback to platform-specific APIs
         let videoData;
         
         switch(platform) {
@@ -212,9 +218,10 @@ function formatCobaltPickerResponse(data, url, platform) {
     };
 }
 
+// ============================================
+// API HANDLERS - Facebook (Backend Serverless)
+// ============================================
 async function fetchFacebookVideo(url) {
-    console.log('Trying Facebook backend API...');
-    
     try {
         const response = await fetchWithTimeout('/api/facebook', {
             method: 'POST',
@@ -234,12 +241,14 @@ async function fetchFacebookVideo(url) {
             throw new Error(data.message || 'Gagal mengambil video');
         }
         
+        // Extract username from URL
         let author = 'Facebook User';
         const authorMatch = url.match(/facebook\.com\/([^\/\?]+)/);
         if (authorMatch && authorMatch[1] && !['share', 'watch', 'reel', 'video', 'videos'].includes(authorMatch[1])) {
             author = authorMatch[1];
         }
         
+        // Detect video type
         let title = '📱 Facebook Video';
         if (url.includes('/reel/')) {
             title = '🎬 Facebook Reel';
@@ -252,7 +261,7 @@ async function fetchFacebookVideo(url) {
             platform: 'facebook',
             title: title,
             author: author,
-            thumbnail: null, // Facebook tidak punya thumbnail
+            thumbnail: null,
             note: '✨ Video diambil dalam kualitas terbaik yang tersedia',
             downloadLinks: [{
                 quality: '🎥 HD Quality',
@@ -262,11 +271,17 @@ async function fetchFacebookVideo(url) {
         };
         
     } catch (error) {
-        console.error('Facebook API error:', error.message);
         throw new Error('Gagal mengambil video Facebook. Pastikan link valid dan video bersifat publik. Format yang didukung: video post, reel, share link, fb.watch');
     }
 }
 
+// ============================================
+// API HANDLERS - TikTok (TikWm API)
+// ============================================
+
+// ============================================
+// API HANDLERS - TikTok (TikWm API)
+// ============================================
 async function fetchTikTokVideo(url) {
     try {
         const apiUrl = `https://tikwm.com/api/`;
@@ -295,7 +310,6 @@ async function fetchTikTokVideo(url) {
         const videoData = data.data;
         const downloadLinks = [];
         
-        // HD video
         if (videoData.hdplay) {
             downloadLinks.push({
                 quality: 'HD - No Watermark',
@@ -304,7 +318,6 @@ async function fetchTikTokVideo(url) {
             });
         }
         
-        // Standard video
         if (videoData.play) {
             downloadLinks.push({
                 quality: 'SD - No Watermark',
@@ -313,7 +326,6 @@ async function fetchTikTokVideo(url) {
             });
         }
         
-        // With watermark
         if (videoData.wmplay) {
             downloadLinks.push({
                 quality: 'With Watermark',
@@ -322,7 +334,6 @@ async function fetchTikTokVideo(url) {
             });
         }
         
-        // Music/Audio
         if (videoData.music) {
             downloadLinks.push({
                 quality: 'Audio Only (MP3)',
@@ -345,6 +356,13 @@ async function fetchTikTokVideo(url) {
     }
 }
 
+// ============================================
+// UI DISPLAY FUNCTIONS
+// ============================================
+
+// ============================================
+// UI DISPLAY FUNCTIONS
+// ============================================
 function formatDuration(seconds) {
     if (!seconds) return 'N/A';
     const mins = Math.floor(seconds / 60);
@@ -360,20 +378,19 @@ function displayResults(data) {
     
     window.currentVideoData = data;
     
+    // Generate thumbnail HTML based on platform
     let thumbnailHtml;
     if (data.thumbnail) {
-        // Ada thumbnail - tampilkan gambar
         thumbnailHtml = `<img src="${data.thumbnail}" alt="Video thumbnail" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">`;
     } else if (data.platform === 'facebook') {
-        // Facebook tanpa thumbnail - tampilkan "Preview tidak tersedia"
         thumbnailHtml = `<div style="background: linear-gradient(135deg, #9370DB 0%, #8B7AB8 100%); padding: 60px 40px; border-radius: 12px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center;">
             <div style="font-size: 48px; margin-bottom: 16px;">📹</div>
             <div style="font-size: 16px; font-weight: 500; opacity: 0.9;">Preview tidak tersedia</div>
             <div style="font-size: 13px; margin-top: 8px; opacity: 0.7;">Video siap didownload</div>
         </div>`;
     } else {
-        // Platform lain tanpa thumbnail - placeholder generik
         thumbnailHtml = `<div style="background: linear-gradient(135deg, #9370DB 0%, #8B7AB8 100%); padding: 80px; border-radius: 12px; color: white; font-size: 48px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            📹
         </div>`;
     }
     
@@ -404,7 +421,9 @@ function displayResults(data) {
     resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Download video with proper filename
+// ============================================
+// DOWNLOAD HANDLER
+// ============================================
 async function downloadVideo(linkIndex, quality) {
     try {
         const videoData = window.currentVideoData;
@@ -416,6 +435,7 @@ async function downloadVideo(linkIndex, quality) {
         const link = videoData.downloadLinks[linkIndex];
         const url = link.url;
         
+        // Handle manual/redirect links
         if (link.manual || link.type === 'redirect') {
             window.open(url, '_blank');
             showNotification('Link dibuka di tab baru.\n\nCara download:\n1. Klik kanan pada media\n2. Pilih "Save as"', 'info');
@@ -424,6 +444,7 @@ async function downloadVideo(linkIndex, quality) {
         
         showNotification('Memulai download...', 'info');
         
+        // Generate filename
         const author = videoData.author || 'user';
         const title = videoData.title || 'video';
         const platform = videoData.platform || 'social';
@@ -441,9 +462,8 @@ async function downloadVideo(linkIndex, quality) {
         
         const filename = `${platform}_${cleanAuthor}_${cleanTitle}_${timestamp}.${extension}`;
         
+        // Try blob download (best method)
         try {
-            console.log('Trying blob download...');
-            
             const response = await fetch(url, {
                 mode: 'cors',
                 credentials: 'omit',
@@ -472,12 +492,11 @@ async function downloadVideo(linkIndex, quality) {
                 return;
             }
         } catch (error) {
-            console.log('Blob download failed:', error);
+            // Fallback to direct download
         }
         
+        // Try direct anchor download
         try {
-            console.log('Trying direct anchor download...');
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
@@ -494,18 +513,21 @@ async function downloadVideo(linkIndex, quality) {
             showNotification('Download dimulai!\nCek folder Downloads Anda.', 'success');
             return;
         } catch (error) {
-            console.log('Anchor download failed:', error);
+            // Fallback to open in new tab
         }
         
-        console.log('Opening in new tab...');
+        // Last resort: open in new tab
         window.open(url, '_blank');
         showNotification('Video dibuka di tab baru.\n\nKlik kanan → "Save video as" untuk download manual.', 'info');
         
     } catch (error) {
-        console.error('Download error:', error);
         showNotification('Download gagal. Coba lagi atau gunakan platform lain.', 'error');
     }
 }
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
 
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
